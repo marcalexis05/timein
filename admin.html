@@ -1,0 +1,3145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Concentrix</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png?v=1.1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        /* Global Typesearch and Text Selection Cursor Protection */
+        *,
+        *::before,
+        *::after {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        input,
+        textarea,
+        [contenteditable="true"],
+        [contenteditable="true"] * {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+
+        button,
+        a,
+        select,
+        option,
+        [role="button"],
+        .cursor-pointer,
+        .nav-arrow,
+        .page-num,
+        .custom-option,
+        svg,
+        path {
+            cursor: pointer !important;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #000;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f8fafc;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 100px;
+            border: 2px solid #f8fafc;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stats-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-input {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #000;
+            transition: all 0.3s ease;
+            outline: none;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .filter-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .filter-input option {
+            font-size: 0.95rem;
+            padding: 10px;
+            color: #000;
+        }
+
+        /* Flatpickr Custom Professional Styling */
+        .flatpickr-calendar {
+            background: #ffffff !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            border: 1px solid #f1f5f9 !important;
+            border-radius: 1.5rem !important;
+            padding: 10px !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            width: 320px !important;
+        }
+
+        .flatpickr-day {
+            max-width: 40px !important;
+            height: 40px !important;
+            line-height: 40px !important;
+        }
+
+        .flatpickr-day.flatpickr-disabled,
+        .flatpickr-day.flatpickr-disabled:hover {
+            color: #cbd5e1 !important;
+            cursor: not-allowed !important;
+        }
+
+        .flatpickr-day.selected {
+            background: #6366f1 !important;
+            border-color: #6366f1 !important;
+            border-radius: 0.75rem !important;
+        }
+
+        .flatpickr-day:hover {
+            background: #f1f5f9 !important;
+            border-color: #f1f5f9 !important;
+            border-radius: 0.75rem !important;
+        }
+
+        .flatpickr-input.flatpickr-mobile,
+        .flatpickr-input[readonly],
+        input.flatpickr-input {
+            cursor: pointer !important;
+        }
+
+        .flatpickr-months .flatpickr-month {
+            color: #000 !important;
+            fill: #000 !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            font-weight: 800 !important;
+        }
+
+        .explorer-date-wrapper {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .explorer-date-wrapper:focus-within {
+            border-color: #6366f1;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Modern Pagination Redesign */
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .pagination-pill {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 0.4rem;
+            border-radius: 9999px;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+            gap: 0.25rem;
+        }
+
+        .page-num {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: 800;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .page-num:hover:not(.active) {
+            background: #f8fafc;
+            color: #6366f1;
+        }
+
+        .page-num.active {
+            background: #6366f1;
+            color: #fff;
+            box-shadow: 0 8px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        .page-dot {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e1;
+            font-weight: 800;
+        }
+
+        .nav-arrow {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            color: #6366f1;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f1f5f9;
+        }
+
+        .nav-arrow:hover:not(:disabled) {
+            transform: scale(1.1);
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+        }
+
+        .nav-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: #f8fafc;
+        }
+
+        th {
+            color: #000 !important;
+            font-size: 0.8rem !important;
+        }
+
+        td {
+            font-size: 0.95rem !important;
+            font-weight: 600;
+        }
+
+        /* Shrink Effect */
+        #mainHeader.shrink {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        #mainHeader.shrink .nav-container {
+            height: 5rem !important;
+            /* h-20 */
+            border-bottom: 1px solid rgba(241, 245, 249, 1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        #mainHeader.shrink .logo-container {
+            height: 8rem !important;
+            /* h-16 */
+        }
+
+        /* Refresh Rotation */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-spin-custom {
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pagination-btn {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #94a3b8;
+            background: transparent;
+            padding: 0.5rem 0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            color: #000;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+
+        /* Custom Circular Checkbox Styling */
+        .circular-checkbox {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            background-color: #fff;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .circular-checkbox:hover {
+            border-color: #6366f1;
+        }
+
+        .circular-checkbox:checked {
+            background-color: #6366f1;
+            border-color: #6366f1;
+        }
+
+        .circular-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 10px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            top: 2px;
+            left: 6px;
+        }
+
+        .circular-checkbox:indeterminate {
+            background-color: #6366f1;
+            border-color: #6366f1;
+        }
+
+        .circular-checkbox:indeterminate::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background-color: #fff;
+            top: 8px;
+            left: 4px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-black min-h-screen relative font-sans">
+    <header id="mainHeader" class="fixed top-0 left-0 w-full z-[70] transition-all duration-500 bg-transparent">
+        <div
+            class="nav-container w-full h-40 px-16 flex justify-between items-center text-slate-900 transition-all duration-500">
+            <div class="flex items-center cursor-pointer group shrink-0"
+                onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div
+                    class="logo-container h-32 flex items-center justify-center overflow-hidden transition-all duration-500 group-hover:scale-105">
+                    <img src="assets/logo.png?v=1.1" alt="Logo" class="h-full object-contain">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div
+                    class="flex items-center gap-2 bg-white/40 p-2 rounded-full border border-white/60 shadow-sm backdrop-blur-md">
+                    <button id="btnViewActivity"
+                        class="relative z-[80] px-8 py-3 rounded-full text-sm font-black bg-white/80 text-slate-900 shadow-sm border border-slate-200 transition-all">Recent
+                        Feed</button>
+                    <button id="btnViewHistory"
+                        class="relative z-[80] px-8 py-3 rounded-full text-sm font-black text-slate-500 hover:bg-white/80 transition-all">Attendance
+                        History</button>
+                    <button id="btnViewInterns"
+                        class="relative z-[80] px-8 py-3 rounded-full text-sm font-black text-slate-500 hover:bg-white/80 transition-all">Intern
+                        Directory</button>
+                    <button id="btnViewRequests"
+                        class="relative z-[80] px-8 py-3 rounded-full text-sm font-black text-slate-500 hover:bg-white/80 transition-all flex items-center gap-2">
+                        Requests
+                        <span id="requestBadge"
+                            class="hidden w-5 h-5 bg-rose-500 text-white text-[10px] rounded-full flex items-center justify-center animate-bounce">0</span>
+                    </button>
+                </div>
+                <div class="h-10 w-px bg-slate-200 mx-2"></div>
+                <a href="register.html"
+                    class="px-8 py-3 bg-white/40 hover:bg-white text-indigo-600 rounded-full text-sm font-black transition-all border border-white/60 shadow-sm">
+                    Register
+                </a>
+                <button id="logoutBtn"
+                    class="px-8 py-3 bg-rose-50/80 hover:bg-rose-500 hover:text-white text-rose-600 rounded-full text-xs font-black transition-all border border-rose-100 shadow-sm">
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sign Out Confirmation Modal -->
+    <div id="logoutModal" class="fixed inset-0 z-[200] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-6">
+            <div
+                class="bg-white rounded-[2.5rem] w-full max-w-md p-10 shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-300">
+                <div class="w-20 h-20 rounded-3xl bg-rose-50 flex items-center justify-center mx-auto mb-8">
+                    <svg class="w-10 h-10 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-3xl font-black text-center text-black mb-4 tracking-tight">Ready to leave?</h3>
+                <p class="text-slate-400 text-center font-medium leading-relaxed mb-10">Are you sure you want to sign
+                    out? You will need to log in again to access the portal.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="cancelLogout"
+                        class="px-8 py-4 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-2xl text-sm font-black transition-all border border-slate-200 cursor-pointer">
+                        Stay
+                    </button>
+                    <button id="confirmLogout"
+                        class="px-8 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl text-sm font-black shadow-lg shadow-rose-200 transition-all cursor-pointer">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('mainHeader');
+            if (window.scrollY > 50) {
+                header.classList.add('shrink');
+            } else {
+                header.classList.remove('shrink');
+            }
+        });
+    </script>
+
+    <main class="container mx-auto px-6 mt-40 max-w-6xl pb-20">
+        <div class="grid md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
+            <div
+                class="bg-white p-8 rounded-[2.5rem] shadow-xl border-l-[10px] border-indigo-600 stats-card relative overflow-hidden flex flex-col items-center justify-center text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Interns</p>
+                <h3 id="totalInterns" class="text-5xl font-black text-black tracking-tighter">0</h3>
+            </div>
+            <div
+                class="bg-white p-8 rounded-[2.5rem] shadow-xl border-l-[10px] border-emerald-500 stats-card relative overflow-hidden flex flex-col items-center justify-center text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Active Today</p>
+                <h3 id="activeToday" class="text-5xl font-black text-black tracking-tighter">0</h3>
+            </div>
+        </div>
+
+        <!-- Activity View -->
+        <div id="viewActivity"
+            class="bg-white rounded-[2.5rem] p-10 shadow-2xl border border-slate-100 min-h-[500px] flex flex-col">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-8">
+                <h2 class="text-3xl font-black text-black tracking-tight">Recent Activity</h2>
+                <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                    <div class="explorer-date-wrapper relative !w-64">
+                        <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="searchActivity" placeholder="Search intern name..."
+                            class="w-full bg-transparent border-none py-4 text-sm font-bold focus:ring-0 outline-none cursor-text">
+                    </div>
+                    <div class="explorer-date-wrapper relative !w-64">
+                        <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        <input type="text" id="dateFilterActivity" placeholder="Pick a date..."
+                            class="w-full bg-transparent border-none py-4 text-sm font-bold focus:ring-0 outline-none cursor-pointer">
+                    </div>
+                    <button id="resetActivity"
+                        class="p-4 bg-slate-50 hover:bg-black hover:text-white rounded-xl transition-all text-slate-400 border border-slate-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="text-black text-[10px] uppercase tracking-widest font-black border-b-4 border-slate-50">
+                            <th class="px-6 py-6">Intern Name</th>
+                            <th class="px-6 py-6">Date</th>
+                            <th class="px-6 py-6 text-center">Time In</th>
+                            <th class="px-6 py-6 text-center">Time Out</th>
+                            <th class="px-6 py-6 text-right">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminActivityFeed" class="text-black divide-y divide-slate-50"></tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <div class="pagination-container">
+                    <button id="prevPageActivity" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="pagesActivity" class="pagination-pill"></div>
+                    <button id="nextPageActivity" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- History View -->
+        <div id="viewReports"
+            class="hidden bg-white rounded-[2.5rem] p-10 shadow-2xl border border-slate-100 min-h-[500px] flex flex-col">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-8">
+                <h2 class="text-3xl font-black text-black tracking-tight">History</h2>
+                <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                    <div class="explorer-date-wrapper relative !w-64">
+                        <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="searchHistory" placeholder="Search intern name..."
+                            class="w-full bg-transparent border-none py-4 text-sm font-bold focus:ring-0 outline-none cursor-text">
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="text-black text-[10px] uppercase tracking-widest font-black border-b-4 border-slate-50">
+                            <th class="px-6 py-6">Intern Name</th>
+                            <th class="px-6 py-6 text-center">Active Days</th>
+                            <th class="px-6 py-6 text-right">Total Time</th>
+                            <th class="px-6 py-6 text-center">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminSummaryTable" class="text-black divide-y divide-slate-50"></tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <div class="pagination-container">
+                    <button id="prevPageHistory" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="pagesHistory" class="pagination-pill"></div>
+                    <button id="nextPageHistory" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interns Management View -->
+        <div id="viewInterns"
+            class="hidden bg-white rounded-[2.5rem] p-10 shadow-2xl border border-slate-100 min-h-[500px] flex flex-col">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-8">
+                <h2 class="text-3xl font-black text-black tracking-tight">Intern Directory</h2>
+                <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                    <!-- Hidden native select for event mapping -->
+                    <select id="filterStatusInterns" class="hidden">
+                        <option value="active" selected>Active Interns</option>
+                        <option value="archived">Archived Interns</option>
+                        <option value="all">All Statuses</option>
+                    </select>
+
+                    <!-- Custom Premium Dropdown Component -->
+                    <div class="relative w-52" id="customFilterStatusContainer">
+                        <button id="customFilterStatusBtn"
+                            class="flex justify-between items-center bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-3.5 text-xs font-black uppercase tracking-wider text-slate-800 focus:border-indigo-600 focus:bg-white hover:border-indigo-600 transition-all w-full select-none cursor-pointer">
+                            <span class="flex items-center gap-2">
+                                <span id="customFilterStatusDot"
+                                    class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span id="customFilterStatusLabel">Active Interns</span>
+                            </span>
+                            <svg id="customFilterChevron"
+                                class="w-4 h-4 text-slate-500 transition-transform duration-300" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div id="customFilterStatusDropdown"
+                            class="hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-slate-100 rounded-3xl shadow-xl overflow-hidden z-[90] animate-in fade-in slide-in-from-top-2 duration-200 flex flex-col p-2 gap-1.5 border border-slate-100/50">
+                            <div data-value="active"
+                                class="custom-option px-4 py-3.5 text-xs font-black uppercase tracking-wider text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/50 rounded-2xl cursor-pointer transition-all flex items-center gap-2.5 select-none">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                Active Interns
+                            </div>
+                            <div data-value="archived"
+                                class="custom-option px-4 py-3.5 text-xs font-black uppercase tracking-wider text-slate-700 hover:text-amber-600 hover:bg-amber-50/50 rounded-2xl cursor-pointer transition-all flex items-center gap-2.5 select-none">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                Archived Interns
+                            </div>
+                            <div data-value="all"
+                                class="custom-option px-4 py-3.5 text-xs font-black uppercase tracking-wider text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-2xl cursor-pointer transition-all flex items-center gap-2.5 select-none">
+                                <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                                All Statuses
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="text" id="searchInterns" placeholder="Search interns..."
+                        class="filter-input !w-64 cursor-text">
+                    <button id="btnPrintAllPasses"
+                        class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6 py-3.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-indigo-600/20 active:scale-95 transition-all select-none cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        Print All
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="text-black text-[10px] uppercase tracking-widest font-black border-b-4 border-slate-50">
+                            <th class="px-6 py-6">Intern Name</th>
+                            <th class="px-6 py-6">Serial Number</th>
+                            <th class="px-6 py-6 text-center">Barcode</th>
+                            <th class="px-6 py-6 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminInternsTable" class="text-black divide-y divide-slate-50"></tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <div class="pagination-container">
+                    <button id="prevPageInterns" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="pagesInternsDir" class="pagination-pill"></div>
+                    <button id="nextPageInterns" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests Management View -->
+        <div id="viewRequests"
+            class="hidden bg-white rounded-[2.5rem] p-10 shadow-2xl border border-slate-100 min-h-[500px] flex flex-col">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-8">
+                <h2 class="text-3xl font-black text-black tracking-tight">Pending Adjustments</h2>
+                <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                    <button id="btnAcceptAllRequests" onclick="handleBulkAdjustment('approved')"
+                        class="hidden flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl px-6 py-3.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-600/20 active:scale-95 transition-all select-none cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Accept All
+                    </button>
+                    <button id="btnRejectAllRequests" onclick="handleBulkAdjustment('rejected')"
+                        class="hidden flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl px-6 py-3.5 text-xs font-black uppercase tracking-wider shadow-lg shadow-rose-500/20 active:scale-95 transition-all select-none cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        Reject All
+                    </button>
+                    <input type="text" id="searchRequests" placeholder="Search intern name..."
+                        class="filter-input !w-64 cursor-text">
+                </div>
+            </div>
+
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="text-black text-[10px] uppercase tracking-widest font-black border-b-4 border-slate-50">
+                            <th class="px-6 py-6">Intern Details</th>
+                            <th class="px-6 py-6 text-center">Requested Date</th>
+                            <th class="px-6 py-6 text-center">Requested Schedule</th>
+                            <th class="px-6 py-6">Justification</th>
+                            <th class="px-6 py-6 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody" class="divide-y divide-slate-50"></tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <div class="pagination-container">
+                    <button id="prevPageRequests" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="pagesRequests" class="pagination-pill"></div>
+                    <button id="nextPageRequests" class="nav-arrow">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Detailed Modal -->
+    <div id="userReportModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-6">
+        <div
+            class="bg-white w-full max-w-4xl max-h-[85vh] rounded-[3rem] shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 id="modalUserName" class="text-2xl font-black text-black">Intern Name</h3>
+                <button id="closeModalBtn"
+                    class="p-3 hover:bg-black hover:text-white rounded-2xl transition-all text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto px-8 py-6">
+                <div class="mb-6">
+                    <div
+                        class="bg-indigo-600 p-6 rounded-[2rem] text-white shadow-lg flex justify-between items-center max-w-xl">
+                        <div>
+                            <p class="text-[9px] font-black uppercase tracking-[0.2em] opacity-70 mb-1">Total
+                                Accumulated Time</p>
+                            <h4 id="modalTotalHours" class="text-3xl font-black tracking-tighter">0 hrs</h4>
+                        </div>
+                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-black text-[9px] uppercase font-black border-b-2 border-slate-100">
+                            <th class="px-4 py-4">Date</th>
+                            <th class="px-4 py-4 text-center">Time In</th>
+                            <th class="px-4 py-4 text-center">Time Out</th>
+                            <th class="px-4 py-4 text-right">Duration</th>
+                            <th class="px-4 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalTableBody" class="divide-y divide-slate-50 text-black"></tbody>
+                </table>
+
+                <div class="mt-8 flex justify-center p-8 bg-slate-50/50 rounded-3xl">
+                    <div class="pagination-container">
+                        <button id="prevPageModal" class="nav-arrow">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="pagesModal" class="pagination-pill"></div>
+                        <button id="nextPageModal" class="nav-arrow">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Edit Modal -->
+    <div id="adminEditModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl animate-in fade-in zoom-in duration-300 relative">
+            <h3 class="text-2xl font-black text-black mb-2">Edit Attendance</h3>
+            <p class="text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest">Update Time In and Time Out</p>
+            
+            <input type="hidden" id="editAttendanceId">
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Date</label>
+                    <div class="explorer-date-wrapper">
+                        <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <input type="text" id="editDate" placeholder="Select Date" class="w-full bg-transparent border-none py-4 text-sm font-bold focus:ring-0 outline-none cursor-pointer">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Time In</label>
+                    <div class="explorer-date-wrapper">
+                        <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <input type="text" id="editTimeIn" placeholder="Select Time In" class="w-full bg-transparent border-none py-4 text-sm font-bold focus:ring-0 outline-none cursor-pointer">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Time Out</label>
+                    <div class="explorer-date-wrapper">
+                        <svg class="w-5 h-5 text-slate-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <input type="text" id="editTimeOut" placeholder="Select Time Out (Optional)" class="w-full bg-transparent border-none py-4 text-sm font-bold focus:ring-0 outline-none cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button onclick="closeAdminEditModal()"
+                        class="flex-1 py-4 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-black transition-colors">Cancel</button>
+                    <button onclick="saveAdminEdit()"
+                        class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20 hover:bg-black transition-all">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ID Pass Photo Upload Modal -->
+    <div id="photoUploadModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl animate-in fade-in zoom-in duration-300">
+            <h3 class="text-2xl font-black text-black mb-2">Upload Photo</h3>
+            <p class="text-sm font-bold text-slate-400 mb-8 uppercase tracking-widest">Select a 1x1 Intern Photo</p>
+
+            <div class="space-y-6">
+                <div id="photoDropZone"
+                    class="w-full h-64 border-4 border-dashed border-slate-100 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:border-indigo-600 hover:bg-indigo-50 transition-all group overflow-hidden bg-slate-50/30">
+                    <input type="file" id="photoInput" class="hidden" accept="image/*">
+                    <div id="photoPreview" class="w-full h-full hidden">
+                        <img src="" alt="Preview" class="w-full h-full object-contain">
+                    </div>
+                    <div id="dropZoneContent" class="text-center p-6">
+                        <div
+                            class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-100 transition-colors">
+                            <svg class="w-8 h-8 text-slate-400 group-hover:text-indigo-600" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-black text-slate-400 group-hover:text-indigo-600">Click to Browse</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button id="cancelPhotoBtn"
+                        class="flex-1 py-4 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-black transition-colors">Cancel</button>
+                    <button id="confirmPrintBtn" disabled
+                        class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20 disabled:opacity-30 disabled:cursor-not-allowed">Generate
+                        Pass</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk ID Pass Photo Upload and Print Modal -->
+    <div id="bulkPrintModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-md z-[110] hidden flex items-center justify-center p-6">
+        <div
+            class="bg-white w-full max-w-2xl rounded-[3rem] p-10 shadow-2xl animate-in fade-in zoom-in duration-300 flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="text-2xl font-black text-black">Bulk Pass Printing</h3>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Assign 1x1 Photos & Print
+                        (6 per A4 Page)</p>
+                    <div class="flex items-center gap-2 mt-4 px-1">
+                        <input type="checkbox" id="bulkSelectAll" class="circular-checkbox cursor-pointer" checked>
+                        <label for="bulkSelectAll" class="text-xs font-black uppercase tracking-wider text-slate-400 select-none cursor-pointer">Select All</label>
+                    </div>
+                </div>
+                <button id="closeBulkPrintBtn"
+                    class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all text-slate-400 shadow-sm cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Scrollable list of interns for photo uploads -->
+            <div class="flex-1 overflow-y-auto my-6 pr-2 space-y-4 max-h-[50vh]" id="bulkInternsList">
+                <!-- Dynamically filled with intern upload cards -->
+            </div>
+
+            <!-- Pagination Controls for Bulk Printing -->
+            <div id="bulkPaginationContainer" class="mt-2 mb-6 flex justify-center hidden">
+                <div class="pagination-container !gap-4">
+                    <button id="prevPageBulk" class="nav-arrow !w-10 !h-10">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <div id="pagesBulk" class="pagination-pill !p-1"></div>
+                    <button id="nextPageBulk" class="nav-arrow !w-10 !h-10">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex gap-4 border-t border-slate-100 pt-6">
+                <button id="cancelBulkPrintBtn"
+                    class="flex-1 py-4 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-rose-600 transition-colors select-none cursor-pointer">Cancel</button>
+                <button id="confirmBulkPrintBtn"
+                    class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20 active:scale-95 transition-all select-none cursor-pointer">
+                    Generate & Print
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Template (Used for Window Content) -->
+    <div id="idPassTemplate" class="hidden">
+        <div class="id-card">
+            <div class="top-section">
+                <div class="brand-logo">
+                    <img src="assets/logo.png" alt="Concentrix">
+                </div>
+                <div class="photo-container">
+                    <div class="photo-frame">
+                        <img id="idPhoto" src="" alt="Photo">
+                    </div>
+                </div>
+                <div class="curve-accent"></div>
+            </div>
+            <div class="bottom-section">
+                <h1 id="idName">INTERN NAME</h1>
+                <p class="title">Intern Associate</p>
+
+                <div class="barcode-area">
+                    <svg id="idBarcode"></svg>
+                    <p id="idSerial">SERIAL</p>
+                </div>
+            </div>
+            <div class="footer-accent"></div>
+        </div>
+    </div>
+
+    <!-- Custom Dialog Modal -->
+    <div id="customConfirmModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-6">
+        <div
+            class="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl animate-in fade-in zoom-in duration-300 flex flex-col text-center border border-slate-50">
+            <!-- Icon Container -->
+            <div id="customConfirmIconContainer"
+                class="w-20 h-20 bg-amber-50 text-amber-600 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-all">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path id="customConfirmIcon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                </svg>
+            </div>
+
+            <h3 id="customConfirmTitle" class="text-2xl font-black text-black mb-2 tracking-tight">Confirm Action</h3>
+            <p id="customConfirmMessage" class="text-sm font-bold text-slate-400 mb-8 leading-relaxed">Are you sure you
+                want to perform this action?</p>
+
+            <div class="flex gap-4">
+                <button id="customConfirmCancelBtn"
+                    class="flex-1 py-4 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-black hover:bg-slate-50 transition-colors rounded-2xl">Cancel</button>
+                <button id="customConfirmSuccessBtn"
+                    class="flex-1 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20 hover:scale-105 hover:bg-black transition-all">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Prompt Modal -->
+    <div id="customPromptModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-6">
+        <div
+            class="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl animate-in fade-in zoom-in duration-300 flex flex-col text-center border border-slate-50">
+            <!-- Icon Container -->
+            <div class="w-20 h-20 bg-rose-50 text-rose-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+
+            <h3 id="customPromptTitle" class="text-2xl font-black text-black mb-2 tracking-tight">Reject Request</h3>
+            <p id="customPromptMessage" class="text-sm font-bold text-slate-400 mb-6 leading-relaxed">Please enter a reason for rejection (optional):</p>
+            
+            <div class="mb-6">
+                <input type="text" id="customPromptInput" placeholder="Reason for rejection..." 
+                    class="w-full px-5 py-4 rounded-2xl bg-slate-50 border-none text-slate-900 placeholder-slate-400 font-bold focus:ring-2 focus:ring-rose-500 outline-none transition-all text-sm">
+            </div>
+
+            <div class="flex gap-4">
+                <button id="customPromptCancelBtn"
+                    class="flex-1 py-4 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-black hover:bg-slate-50 transition-colors rounded-2xl">Cancel</button>
+                <button id="customPromptSuccessBtn"
+                    class="flex-1 py-4 bg-rose-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-600/20 hover:scale-105 hover:bg-black transition-all">Reject</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+    <script>
+        // Global Constants and State
+        const itemsPerPage = 5;
+        const modalItemsPerPage = 5;
+        let activityData = [];
+        let historyData = [];
+        let internsData = [];
+        window.modalRawData = [];
+        let activityPage = 1;
+        let historyPage = 1;
+        let internsPage = 1;
+        window.modalPage = 1;
+        let requestsData = [];
+        let requestsPage = 1;
+
+        window.showCustomConfirm = function (title, message, type, onConfirm) {
+            const modal = document.getElementById('customConfirmModal');
+            const titleEl = document.getElementById('customConfirmTitle');
+            const msgEl = document.getElementById('customConfirmMessage');
+            const iconContainer = document.getElementById('customConfirmIconContainer');
+            const iconEl = document.getElementById('customConfirmIcon');
+            const successBtn = document.getElementById('customConfirmSuccessBtn');
+            const cancelBtn = document.getElementById('customConfirmCancelBtn');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            if (type === 'alert' || type === 'info' || type === 'error' || type === 'success') {
+                cancelBtn.classList.add('hidden');
+            } else {
+                cancelBtn.classList.remove('hidden');
+            }
+
+            if (type === 'archive') {
+                iconContainer.className = "w-20 h-20 bg-amber-50 text-amber-600 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-all";
+                iconEl.setAttribute('d', 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4');
+                successBtn.className = "flex-1 py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-600/20 hover:scale-105 hover:bg-black transition-all";
+                successBtn.textContent = "Archive";
+            } else if (type === 'unarchive') {
+                iconContainer.className = "w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-all";
+                iconEl.setAttribute('d', 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12');
+                successBtn.className = "flex-1 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20 hover:scale-105 hover:bg-black transition-all";
+                successBtn.textContent = "Restore";
+            } else if (type === 'delete') {
+                iconContainer.className = "w-20 h-20 bg-rose-50 text-rose-600 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-all";
+                iconEl.setAttribute('d', 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16');
+                successBtn.className = "flex-1 py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-600/20 hover:scale-105 hover:bg-black transition-all";
+                successBtn.textContent = "Delete";
+            } else if (type === 'error') {
+                iconContainer.className = "w-20 h-20 bg-rose-50 text-rose-600 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-all";
+                iconEl.setAttribute('d', 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z');
+                successBtn.className = "flex-1 py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-600/20 hover:scale-105 hover:bg-black transition-all";
+                successBtn.textContent = "OK";
+            } else if (type === 'success') {
+                iconContainer.className = "w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-all";
+                iconEl.setAttribute('d', 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z');
+                successBtn.className = "flex-1 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-600/20 hover:scale-105 hover:bg-black transition-all";
+                successBtn.textContent = "OK";
+            } else {
+                iconContainer.className = "w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-all";
+                iconEl.setAttribute('d', 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z');
+                successBtn.className = "flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-indigo-600/20 hover:scale-105 hover:bg-black transition-all";
+                successBtn.textContent = "OK";
+            }
+
+            modal.classList.remove('hidden');
+
+            const newSuccessBtn = successBtn.cloneNode(true);
+            successBtn.parentNode.replaceChild(newSuccessBtn, successBtn);
+
+            const newCancelBtn = cancelBtn.cloneNode(true);
+            cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+            newSuccessBtn.onclick = () => {
+                modal.classList.add('hidden');
+                if (onConfirm) onConfirm();
+            };
+
+            newCancelBtn.onclick = () => {
+                modal.classList.add('hidden');
+            };
+        };
+
+        window.showCustomPrompt = function (title, message, placeholder, onConfirm, onCancel) {
+            const modal = document.getElementById('customPromptModal');
+            const titleEl = document.getElementById('customPromptTitle');
+            const msgEl = document.getElementById('customPromptMessage');
+            const inputEl = document.getElementById('customPromptInput');
+            const successBtn = document.getElementById('customPromptSuccessBtn');
+            const cancelBtn = document.getElementById('customPromptCancelBtn');
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+            inputEl.placeholder = placeholder || '';
+            inputEl.value = '';
+
+            modal.classList.remove('hidden');
+            inputEl.focus();
+
+            const newSuccessBtn = successBtn.cloneNode(true);
+            successBtn.parentNode.replaceChild(newSuccessBtn, successBtn);
+
+            const newCancelBtn = cancelBtn.cloneNode(true);
+            cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+            newSuccessBtn.onclick = () => {
+                modal.classList.add('hidden');
+                if (onConfirm) onConfirm(inputEl.value);
+            };
+
+            newCancelBtn.onclick = () => {
+                modal.classList.add('hidden');
+                if (onCancel) onCancel();
+            };
+            
+            inputEl.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    newSuccessBtn.click();
+                }
+            };
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const btnA = document.getElementById('btnViewActivity');
+            const btnH = document.getElementById('btnViewHistory');
+            const btnI = document.getElementById('btnViewInterns');
+            const btnR = document.getElementById('btnViewRequests');
+            const vA = document.getElementById('viewActivity');
+            const vH = document.getElementById('viewReports');
+            const vI = document.getElementById('viewInterns');
+            const vR = document.getElementById('viewRequests');
+
+            function setActiveTab(activeBtn, activeView) {
+                [btnA, btnH, btnI, btnR].forEach(btn => {
+                    if (!btn) return;
+                    btn.classList.remove('bg-white/80', 'text-slate-900', 'shadow-sm', 'border', 'border-slate-200');
+                    btn.classList.add('text-slate-500', 'hover:bg-white/80');
+                });
+                if (activeBtn) {
+                    activeBtn.classList.remove('text-slate-500', 'hover:bg-white/80');
+                    activeBtn.classList.add('bg-white/80', 'text-slate-900', 'shadow-sm', 'border', 'border-slate-200');
+                }
+                [vA, vH, vI, vR].forEach(v => v ? v.classList.add('hidden') : null);
+                if (activeView) activeView.classList.remove('hidden');
+            }
+
+            if (btnA) btnA.onclick = () => { setActiveTab(btnA, vA); activityPage = 1; loadActivity(); };
+            if (btnH) btnH.onclick = () => { setActiveTab(btnH, vH); historyPage = 1; loadHistory(); };
+            if (btnI) btnI.onclick = () => { setActiveTab(btnI, vI); internsPage = 1; loadInterns(); };
+            if (btnR) btnR.onclick = () => { setActiveTab(btnR, vR); loadRequests(); };
+
+            window.handleBulkAdjustment = async function (decision) {
+                const query = document.getElementById('searchRequests')?.value.toLowerCase() || '';
+                const filtered = requestsData.filter(req => req.full_name.toLowerCase().includes(query));
+                
+                if (filtered.length === 0) {
+                    if (typeof window.showCustomConfirm === 'function') {
+                        window.showCustomConfirm("No Requests", "There are no pending requests to process.", "info");
+                    } else {
+                        alert("There are no pending requests to process.");
+                    }
+                    return;
+                }
+
+                const ids = filtered.map(req => req.id);
+
+                const performBulkAction = async (remarks) => {
+                    const btnAccept = document.getElementById('btnAcceptAllRequests');
+                    const btnReject = document.getElementById('btnRejectAllRequests');
+                    const originalAcceptText = btnAccept ? btnAccept.innerHTML : '';
+                    const originalRejectText = btnReject ? btnReject.innerHTML : '';
+
+                    if (btnAccept) {
+                        btnAccept.disabled = true;
+                        btnAccept.innerHTML = `<svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
+                    }
+                    if (btnReject) {
+                        btnReject.disabled = true;
+                        btnReject.innerHTML = `<svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
+                    }
+
+                    // Store original HTML of each row's action container in case of error
+                    const originalActionsHTML = {};
+                    filtered.forEach(req => {
+                        const actionsContainer = document.getElementById(`actions-${req.id}`);
+                        if (actionsContainer) {
+                            originalActionsHTML[req.id] = actionsContainer.innerHTML;
+                            actionsContainer.innerHTML = `<svg class="animate-spin h-6 w-6 text-indigo-600 mr-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sending...</span>`;
+                        }
+                    });
+
+                    try {
+                        const r = await fetch('backend/attendance.php?action=handleBulkAdjustment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ ids, decision, remarks })
+                        });
+                        const d = await r.json();
+                        if (d.status === 'success') {
+                            if (typeof window.loadRequests === 'function') window.loadRequests();
+                            if (typeof loadActivity === 'function') loadActivity();
+                            if (typeof window.showCustomConfirm === 'function') {
+                                window.showCustomConfirm("Success", `Bulk requests have been ${decision} successfully, and the interns were notified.`, "success");
+                            } else {
+                                alert(`Bulk requests have been ${decision} successfully.`);
+                            }
+                        } else {
+                            if (typeof window.showCustomConfirm === 'function') {
+                                window.showCustomConfirm("Error", d.message, "error");
+                            } else {
+                                alert(d.message);
+                            }
+                        }
+                    } catch (e) {
+                        if (typeof window.showCustomConfirm === 'function') {
+                            window.showCustomConfirm("Error", "Bulk operation failed.", "error");
+                        } else {
+                            alert("Bulk operation failed.");
+                        }
+                    } finally {
+                        if (btnAccept) {
+                            btnAccept.disabled = false;
+                            btnAccept.innerHTML = originalAcceptText;
+                        }
+                        if (btnReject) {
+                            btnReject.disabled = false;
+                            btnReject.innerHTML = originalRejectText;
+                        }
+                        // Restore original HTML if error occurred and requests weren't reloaded
+                        filtered.forEach(req => {
+                            const actionsContainer = document.getElementById(`actions-${req.id}`);
+                            if (actionsContainer && originalActionsHTML[req.id]) {
+                                actionsContainer.innerHTML = originalActionsHTML[req.id];
+                            }
+                        });
+                    }
+                };
+
+                const confirmTitle = decision === 'approved' ? "Approve All Requests?" : "Reject All Requests?";
+                const confirmMsg = `Are you sure you want to ${decision} all ${filtered.length} pending request(s)?`;
+
+                if (decision === 'rejected') {
+                    if (typeof window.showCustomPrompt === 'function') {
+                        window.showCustomPrompt(
+                            confirmTitle,
+                            "Please enter a reason for rejection (optional) for all selected requests:",
+                            "Reason for rejection...",
+                            (remarks) => {
+                                performBulkAction(remarks);
+                            }
+                        );
+                    } else {
+                        const remarks = prompt("Please enter a reason for rejection (optional) for all selected requests:");
+                        if (remarks !== null) {
+                            performBulkAction(remarks);
+                        }
+                    }
+                } else {
+                    if (typeof window.showCustomConfirm === 'function') {
+                        window.showCustomConfirm(
+                            confirmTitle,
+                            confirmMsg,
+                            "confirm",
+                            () => {
+                                performBulkAction('');
+                            }
+                        );
+                    } else {
+                        if (confirm(confirmMsg)) {
+                            performBulkAction('');
+                        }
+                    }
+                }
+            };
+
+            // Custom Status Dropdown Controller
+            const dropdownBtn = document.getElementById('customFilterStatusBtn');
+            const dropdownMenu = document.getElementById('customFilterStatusDropdown');
+            const chevron = document.getElementById('customFilterChevron');
+            const statusLabel = document.getElementById('customFilterStatusLabel');
+            const statusDot = document.getElementById('customFilterStatusDot');
+            const hiddenSelect = document.getElementById('filterStatusInterns');
+
+            if (dropdownBtn && dropdownMenu) {
+                dropdownBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    const isOpen = !dropdownMenu.classList.contains('hidden');
+                    if (isOpen) {
+                        dropdownMenu.classList.add('hidden');
+                        chevron.classList.remove('rotate-180');
+                    } else {
+                        dropdownMenu.classList.remove('hidden');
+                        chevron.classList.add('rotate-180');
+                    }
+                };
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', () => {
+                    dropdownMenu.classList.add('hidden');
+                    chevron.classList.remove('rotate-180');
+                });
+
+                // Option select
+                dropdownMenu.querySelectorAll('.custom-option').forEach(opt => {
+                    opt.onclick = () => {
+                        const val = opt.getAttribute('data-value');
+                        const labelText = opt.innerText.trim();
+
+                        // Update hidden native select
+                        hiddenSelect.value = val;
+
+                        // Update display label
+                        statusLabel.textContent = labelText;
+
+                        // Update dot color and style
+                        statusDot.className = "w-2.5 h-2.5 rounded-full transition-all duration-300";
+                        if (val === 'active') {
+                            statusDot.classList.add('bg-emerald-500', 'animate-pulse');
+                        } else if (val === 'archived') {
+                            statusDot.classList.add('bg-amber-500');
+                        } else {
+                            statusDot.classList.add('bg-slate-400');
+                        }
+
+                        // Trigger native select change event so directory list refreshes
+                        hiddenSelect.dispatchEvent(new Event('change'));
+                    };
+                });
+            }
+
+            function renderPagination(containerId, currentPage, totalPages, onPageChange) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = '';
+                if (totalPages <= 0) return;
+
+                const maxVisible = 3;
+                let startPage = Math.max(1, currentPage - 1);
+                let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+                if (endPage - startPage + 1 < maxVisible) {
+                    startPage = Math.max(1, endPage - maxVisible + 1);
+                }
+
+                if (startPage > 1) {
+                    const p1 = document.createElement('button');
+                    p1.className = 'page-num flex items-center justify-center';
+                    p1.textContent = '1';
+                    p1.onclick = () => onPageChange(1);
+                    container.appendChild(p1);
+                    if (startPage > 2) {
+                        const dots = document.createElement('div');
+                        dots.className = 'page-dot flex items-center justify-center';
+                        dots.textContent = '...';
+                        container.appendChild(dots);
+                    }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const p = document.createElement('button');
+                    p.className = `page-num flex items-center justify-center ${i === currentPage ? 'active' : ''}`;
+                    p.textContent = i;
+                    p.onclick = () => onPageChange(i);
+                    container.appendChild(p);
+                }
+
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        const dots = document.createElement('div');
+                        dots.className = 'page-dot flex items-center justify-center';
+                        dots.textContent = '...';
+                        container.appendChild(dots);
+                    }
+                    const plast = document.createElement('button');
+                    plast.className = 'page-num flex items-center justify-center';
+                    plast.textContent = totalPages;
+                    plast.onclick = () => onPageChange(totalPages);
+                    container.appendChild(plast);
+                }
+            }
+
+            function renderInputPagination(containerId, currentPage, totalPages, onPageChange) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = '';
+                if (totalPages <= 0) return;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex items-center gap-2 px-3 py-1';
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = currentPage;
+                input.min = 1;
+                input.max = totalPages;
+                input.className = 'w-10 h-8 rounded-lg bg-slate-50 border-none text-center font-black text-slate-900 focus:ring-2 focus:ring-indigo-600 outline-none transition-all text-xs';
+
+                input.onchange = (e) => {
+                    let val = parseInt(e.target.value);
+                    if (isNaN(val) || val < 1) val = 1;
+                    if (val > totalPages) val = totalPages;
+                    onPageChange(val);
+                };
+
+                const ofLabel = document.createElement('span');
+                ofLabel.className = 'text-[9px] font-black uppercase tracking-widest text-slate-400';
+                ofLabel.textContent = `/ ${totalPages}`;
+
+                wrapper.appendChild(input);
+                wrapper.appendChild(ofLabel);
+                container.appendChild(wrapper);
+            }
+
+            const fpActivity = flatpickr("#dateFilterActivity", {
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "F j, Y",
+                defaultDate: "today",
+                maxDate: "today",
+                disable: [
+                    function (date) {
+                        return (date.getDay() === 0 || date.getDay() === 6);
+                    }
+                ],
+                onReady: function (selectedDates, dateStr, instance) {
+                    instance.altInput.style.cursor = 'pointer';
+                },
+                onChange: (d, str) => { activityPage = 1; loadActivity(); }
+            });
+            // Removed History date filter flatpickr as requested
+
+
+            function getNow() { return new Date(); }
+
+            async function loadRequests() {
+                const tbody = document.getElementById('requestsTableBody');
+                const badge = document.getElementById('requestBadge');
+                if (tbody && tbody.innerHTML === '') {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-20 text-slate-400 font-bold">Loading requests...</td></tr>';
+                }
+
+                try {
+                    const r = await fetch('backend/attendance.php?action=getPendingRequests');
+                    const d = await r.json();
+                    if (d.status === 'success') {
+                        requestsData = d.requests || [];
+                        requestsPage = 1;
+
+                        // Update badge
+                        if (requestsData.length > 0) {
+                            badge.textContent = requestsData.length;
+                            badge.classList.remove('hidden');
+                        } else {
+                            badge.classList.add('hidden');
+                        }
+
+                        renderRequests();
+                    }
+                } catch (e) {
+                    console.error("Fetch requests failed", e);
+                }
+            }
+
+            function renderRequests() {
+                const tbody = document.getElementById('requestsTableBody');
+                if (!tbody) return;
+
+                const query = document.getElementById('searchRequests')?.value.toLowerCase() || '';
+                const filtered = requestsData.filter(req => req.full_name.toLowerCase().includes(query));
+
+                const btnAcceptAll = document.getElementById('btnAcceptAllRequests');
+                const btnRejectAll = document.getElementById('btnRejectAllRequests');
+
+                if (filtered.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-20 text-slate-400 font-bold">No pending requests found.</td></tr>';
+                    const container = document.getElementById('pagesRequests');
+                    if (container) container.innerHTML = '';
+                    if (document.getElementById('prevPageRequests')) document.getElementById('prevPageRequests').disabled = true;
+                    if (document.getElementById('nextPageRequests')) document.getElementById('nextPageRequests').disabled = true;
+                    if (btnAcceptAll) btnAcceptAll.classList.add('hidden');
+                    if (btnRejectAll) btnRejectAll.classList.add('hidden');
+                    return;
+                }
+
+                if (btnAcceptAll) btnAcceptAll.classList.remove('hidden');
+                if (btnRejectAll) btnRejectAll.classList.remove('hidden');
+
+                const start = (requestsPage - 1) * itemsPerPage;
+                const paginated = filtered.slice(start, start + itemsPerPage);
+
+                tbody.innerHTML = paginated.map(req => `
+                    <tr class="hover:bg-slate-50/50 transition-all border-b border-slate-50">
+                        <td class="px-6 py-6">
+                            <div class="font-black text-black text-lg">${req.full_name}</div>
+                        </td>
+                        <td class="px-6 py-6 text-center font-black text-slate-600">${new Date(req.requested_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</td>
+                        <td class="px-6 py-6 text-center">
+                            ${req.request_type === 'delete' ? `
+                                <span class="px-4 py-1.5 bg-rose-100 text-rose-700 rounded-full font-black text-xs tracking-wider uppercase border border-rose-200 shadow-sm animate-pulse">DELETE RECORD</span>
+                            ` : `
+                                <div class="flex items-center justify-center gap-3">
+                                    <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg font-black text-xs">${req.formatted_time_in}</span>
+                                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                    <span class="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg font-black text-xs">${req.formatted_time_out}</span>
+                                </div>
+                            `}
+                        </td>
+                        <td class="px-6 py-6 max-w-xs">
+                            <p class="text-sm text-slate-500 font-medium italic">"${req.reason || 'No reason provided'}"</p>
+                        </td>
+                        <td class="px-6 py-6 text-right">
+                            <div id="actions-${req.id}" class="flex justify-end gap-3 items-center min-h-[48px]">
+                                <button onclick="handleAdjustment(${req.id}, 'approved')" class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                </button>
+                                <button onclick="handleAdjustment(${req.id}, 'rejected')" class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+
+                const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                renderPagination('pagesRequests', requestsPage, totalPages, (p) => {
+                    requestsPage = p;
+                    renderRequests();
+                });
+                if (document.getElementById('prevPageRequests')) document.getElementById('prevPageRequests').disabled = requestsPage === 1;
+                if (document.getElementById('nextPageRequests')) document.getElementById('nextPageRequests').disabled = requestsPage >= totalPages;
+            }
+
+            window.handleAdjustment = async function (id, decision) {
+                const performAction = async (remarks) => {
+                    const actionsContainer = document.getElementById(`actions-${id}`);
+                    let originalHTML = '';
+                    if (actionsContainer) {
+                        originalHTML = actionsContainer.innerHTML;
+                        actionsContainer.innerHTML = `<svg class="animate-spin h-6 w-6 text-indigo-600 mr-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sending...</span>`;
+                    }
+                    try {
+                        const r = await fetch('backend/attendance.php?action=handleAdjustment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id, decision, remarks })
+                        });
+                        const d = await r.json();
+                        if (d.status === 'success') {
+                            loadRequests();
+                            loadActivity(); // Refresh activity since log might have been added
+                            window.showCustomConfirm("Success", `Request has been ${decision} successfully, and the intern was notified.`, "success");
+                        } else {
+                            if (actionsContainer) actionsContainer.innerHTML = originalHTML;
+                            window.showCustomConfirm("Error", d.message, "error");
+                        }
+                    } catch (e) {
+                        if (actionsContainer) actionsContainer.innerHTML = originalHTML;
+                        window.showCustomConfirm("Error", "Operation failed.", "error");
+                    }
+                };
+
+                if (decision === 'rejected') {
+                    window.showCustomPrompt(
+                        "Reject Request",
+                        "Please enter a reason for rejection (optional):",
+                        "Reason for rejection...",
+                        (remarks) => {
+                            performAction(remarks);
+                        }
+                    );
+                } else {
+                    performAction('');
+                }
+            }
+
+            // Initial badge check
+            setInterval(async () => {
+                const r = await fetch('backend/attendance.php?action=getPendingRequests');
+                const d = await r.json();
+                if (d.status === 'success') {
+                    const badge = document.getElementById('requestBadge');
+                    if (d.requests.length > 0) {
+                        badge.textContent = d.requests.length;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            }, 30000); // Check every 30s
+
+            async function loadActivity() {
+                const now = getNow();
+                const date = document.getElementById('dateFilterActivity').value;
+                let url = `backend/attendance.php?action=history&year=${now.getFullYear()}`;
+                if (date) url += `&date=${date}`;
+                else url += `&month=${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+                const r = await fetch(url);
+                const d = await r.json();
+                activityData = d.status === 'success' ? d.history : [];
+                renderActivity();
+                updateMetrics();
+            }
+
+            function renderActivity() {
+                const body = document.getElementById('adminActivityFeed');
+                const query = document.getElementById('searchActivity').value.toLowerCase();
+                const filtered = activityData.filter(row => row.full_name.toLowerCase().includes(query));
+
+                const start = (activityPage - 1) * itemsPerPage;
+                const paginated = filtered.slice(start, start + itemsPerPage);
+                body.innerHTML = '';
+                paginated.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50 transition-colors';
+
+                    let durText = '--';
+                    let durClass = 'text-emerald-600';
+                    let durDataAttr = '';
+
+                    if (row.is_absent == 1) {
+                        durText = '';
+                        durClass = 'text-rose-600 font-black';
+                        tr.classList.add('bg-rose-50/10');
+                    } else if (row.raw_time_in && !row.raw_time_out) {
+                        const startTime = new Date(row.raw_date + ' ' + row.raw_time_in).getTime();
+                        const now = Date.now();
+                        let diffSeconds = Math.max(0, Math.floor((now - startTime) / 1000));
+
+                        if (diffSeconds >= 0) {
+                            durText = formatSecondsToText(diffSeconds, true);
+                            durClass = 'text-indigo-600 live-duration animate-pulse';
+                            tr.classList.add('bg-indigo-50/10');
+                            durDataAttr = `data-start="${startTime}"`;
+                        } else {
+                            durText = 'Starting...';
+                        }
+                    } else if (row.total_seconds) {
+                        durText = formatSecondsToText(row.total_seconds);
+                        if (parseInt(row.total_seconds) >= 43200) {
+                            durClass = 'text-rose-600 font-black flex items-center justify-center gap-1';
+                            durText = `<span>${formatSecondsToText(row.total_seconds)}</span><svg class="w-5 h-5 text-rose-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Forgot to Time Out (Auto Timed Out)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+                        }
+                    }
+
+                    tr.innerHTML = `
+                        <td class="px-6 py-6 font-bold text-slate-800">${row.full_name}</td>
+                        <td class="px-6 py-6 text-sm font-bold text-slate-400">${row.formatted_date}</td>
+                        <td class="px-6 py-6 text-center text-emerald-600 font-black">${row.is_absent == 1 && !row.raw_time_in ? '--' : row.formatted_time_in}</td>
+                        <td class="px-6 py-6 text-center text-rose-600 font-black">${row.is_absent == 1 ? '--' : row.formatted_time_out}</td>
+                        <td class="px-6 py-6 text-right ${durClass} font-black text-lg" ${durDataAttr}>${durText}</td>
+                    `;
+                    body.appendChild(tr);
+                });
+                const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                renderPagination('pagesActivity', activityPage, totalPages, (p) => {
+                    activityPage = p;
+                    renderActivity();
+                });
+            }
+
+            async function loadHistory() {
+                const now = getNow();
+
+                // Fetch all users first
+                const uRes = await fetch('backend/get_users.php');
+                const uData = await uRes.json();
+                if (uData.status !== 'success') return;
+
+                // Fetch ALL history records ever for everyone
+                let historyUrl = `backend/attendance.php?action=history&month=all`;
+
+                const hRes = await fetch(historyUrl);
+                const hData = await hRes.json();
+                const allHistory = hData.status === 'success' ? hData.history : [];
+
+                // Filter out archived users
+                const activeUsers = uData.users.filter(u => u.is_archived != 1);
+
+                // Group by user
+                historyData = activeUsers.map(u => {
+                    const userLogs = allHistory.filter(log => log.user_id == u.id);
+                    let totalSec = 0;
+                    userLogs.forEach(log => totalSec += parseInt(log.total_seconds || 0));
+                    return {
+                        ...u,
+                        activeDays: userLogs.length,
+                        totalSec: totalSec
+                    };
+                });
+
+                renderHistory();
+            }
+
+            function renderHistory() {
+                const body = document.getElementById('adminSummaryTable');
+                const query = document.getElementById('searchHistory').value.toLowerCase();
+                const filtered = historyData.filter(u => u.full_name.toLowerCase().includes(query));
+
+                const start = (historyPage - 1) * itemsPerPage;
+                const paginated = filtered.slice(start, start + itemsPerPage);
+                body.innerHTML = '';
+                paginated.forEach(u => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50 transition-colors';
+                    tr.innerHTML = `
+                        <td class="px-6 py-8">${u.full_name}</td>
+                        <td class="px-6 py-8 text-center font-black text-slate-400">${u.activeDays} Days</td>
+                        <td class="px-6 py-8 text-right font-black text-indigo-600 text-2xl">${formatSecondsToText(u.totalSec)}</td>
+                        <td class="px-6 py-8 text-center">
+                            <button onclick="openUserReport('${u.id}', '${u.full_name}')" class="px-8 py-3 bg-black text-white text-xs font-black rounded-2xl hover:scale-105 transition-all">View</button>
+                        </td>
+                    `;
+                    body.appendChild(tr);
+                });
+                const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                renderPagination('pagesHistory', historyPage, totalPages, (p) => {
+                    historyPage = p;
+                    renderHistory();
+                });
+                document.getElementById('prevPageHistory').disabled = historyPage === 1;
+                document.getElementById('nextPageHistory').disabled = historyPage >= totalPages;
+            }
+
+            async function updateMetrics() {
+                try {
+                    const now = getNow();
+                    const usersRes = await fetch('backend/get_users.php');
+                    const usersData = await usersRes.json();
+                    if (usersData.status !== 'success') return;
+
+                    if (document.getElementById('totalInterns')) {
+                        const activeInterns = (usersData.users || []).filter(u => u.is_archived != 1);
+                        document.getElementById('totalInterns').textContent = activeInterns.length;
+                    }
+
+                    const today = now.toISOString().split('T')[0];
+                    const res = await fetch(`backend/attendance.php?action=history&date=${today}`);
+                    const data = await res.json();
+                    if (document.getElementById('activeToday')) {
+                        const activeCount = (data && data.history)
+                            ? data.history.filter(h => h.raw_time_in !== null && h.is_absent != 1).length
+                            : 0;
+                        document.getElementById('activeToday').textContent = activeCount;
+                    }
+
+                    const mRes = await fetch(`backend/attendance.php?action=history&month=${String(now.getMonth() + 1).padStart(2, '0')}&year=${now.getFullYear()}`);
+                    const mData = await mRes.json();
+                    let totalS = 0;
+                    if (mData && mData.history) {
+                        mData.history.forEach(h => { if (h && h.total_seconds && parseInt(h.total_seconds) !== 43200) totalS += parseInt(h.total_seconds); });
+                    }
+                    if (document.getElementById('totalHours')) {
+                        document.getElementById('totalHours').textContent = Math.floor(totalS / 3600);
+                    }
+                } catch (e) {
+                    console.error("Failed to update metrics", e);
+                }
+            }
+
+            document.getElementById('prevPageActivity').onclick = () => { if (activityPage > 1) { activityPage--; renderActivity(); } };
+            document.getElementById('nextPageActivity').onclick = () => { if (activityPage * itemsPerPage < activityData.length) { activityPage++; renderActivity(); } };
+            document.getElementById('prevPageHistory').onclick = () => { if (historyPage > 1) { historyPage--; renderHistory(); } };
+            document.getElementById('nextPageHistory').onclick = () => { if (historyPage * itemsPerPage < historyData.length) { historyPage++; renderHistory(); } };
+
+            document.getElementById('prevPageModal').onclick = () => { if (window.modalPage > 1) { window.modalPage--; renderModal(); } };
+            document.getElementById('nextPageModal').onclick = () => {
+                const totalPages = Math.ceil(window.modalRawData.length / modalItemsPerPage) || 1;
+                if (window.modalPage < totalPages) { window.modalPage++; renderModal(); }
+            };
+
+            // Requests View Pagination & Search Listeners
+            document.getElementById('prevPageRequests').onclick = () => { if (requestsPage > 1) { requestsPage--; renderRequests(); } };
+            document.getElementById('nextPageRequests').onclick = () => {
+                const query = document.getElementById('searchRequests')?.value.toLowerCase() || '';
+                const filtered = requestsData.filter(req => req.full_name.toLowerCase().includes(query));
+                const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                if (requestsPage < totalPages) { requestsPage++; renderRequests(); }
+            };
+            document.getElementById('searchRequests')?.addEventListener('input', () => {
+                requestsPage = 1;
+                renderRequests();
+            });
+
+            // Auth (Moved down to avoid blocking listeners)
+            try {
+                const res = await fetch('backend/auth.php?action=check');
+                const auth = await res.json();
+                if (auth.status !== 'success' || auth.role !== 'admin') { window.location.href = 'login.html'; return; }
+                if (document.getElementById('adminUsername')) document.getElementById('adminUsername').textContent = auth.username;
+            } catch (e) { console.error("Auth check failed", e); }
+
+            async function loadInterns() {
+                const res = await fetch('backend/get_users.php');
+                const data = await res.json();
+                internsData = data.status === 'success' ? data.users : [];
+                renderInterns();
+            }
+
+            function renderInterns() {
+                const body = document.getElementById('adminInternsTable');
+                const query = document.getElementById('searchInterns').value.toLowerCase();
+
+                const statusFilter = document.getElementById('filterStatusInterns').value;
+                let filtered = internsData;
+                if (statusFilter === 'active') {
+                    filtered = filtered.filter(u => u.is_archived != 1);
+                } else if (statusFilter === 'archived') {
+                    filtered = filtered.filter(u => u.is_archived == 1);
+                }
+
+                filtered = filtered.filter(u => u.full_name.toLowerCase().includes(query) || (u.serial_number && u.serial_number.toLowerCase().includes(query)));
+
+                const start = (internsPage - 1) * itemsPerPage;
+                const paginated = filtered.slice(start, start + itemsPerPage);
+                body.innerHTML = '';
+
+                paginated.forEach(u => {
+                    const tr = document.createElement('tr');
+                    tr.className = u.is_archived == 1
+                        ? 'bg-slate-100/40 text-slate-500 hover:bg-slate-100 transition-colors opacity-95'
+                        : 'hover:bg-slate-50 transition-colors';
+                    tr.innerHTML = `
+                        <td class="px-6 py-6">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold ${u.is_archived == 1 ? 'text-slate-400 line-through' : 'text-slate-800'}">${u.full_name}</span>
+                                ${u.is_archived == 1 ? '<span class="px-2.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black rounded-lg uppercase tracking-wider">Archived</span>' : ''}
+                            </div>
+                        </td>
+                        <td class="px-6 py-6 font-mono font-bold ${u.is_archived == 1 ? 'text-slate-400' : 'text-slate-500'}">${u.serial_number || 'N/A'}</td>
+                        <td class="px-6 py-6 text-center">
+                            <div class="flex justify-center ${u.is_archived == 1 ? 'opacity-40' : ''}">
+                                <svg id="barcode-${u.id}" class="h-10"></svg>
+                            </div>
+                        </td>
+                        <td class="px-6 py-6 text-right">
+                            <div class="flex justify-end gap-3 items-center">
+                                <button onclick="printBarcode('${u.id}', '${u.full_name}', '${u.serial_number}')" class="px-6 py-3 bg-indigo-600 text-white text-xs font-black rounded-xl hover:bg-black transition-all">Print Pass</button>
+                                ${u.is_archived == 1 ? `
+                                    <button onclick="toggleArchiveUser(${u.id}, false)" title="Restore / Unarchive Account" class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                        </svg>
+                                    </button>
+                                ` : `
+                                    <button onclick="toggleArchiveUser(${u.id}, true)" title="Archive Account" class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                        </svg>
+                                    </button>
+                                `}
+                                ${u.is_archived == 1 ? `
+                                    <button onclick="deleteUser(${u.id}, '${u.full_name.replace(/'/g, "\\'")}')" title="Delete Account" class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all flex items-center justify-center shadow-sm">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    `;
+                    body.appendChild(tr);
+                    if (u.serial_number) {
+                        JsBarcode(`#barcode-${u.id}`, u.serial_number, {
+                            format: "CODE128",
+                            width: 1,
+                            height: 30,
+                            displayValue: false
+                        });
+                    }
+                });
+
+                const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                renderPagination('pagesInternsDir', internsPage, totalPages, (p) => {
+                    internsPage = p;
+                    renderInterns();
+                });
+                document.getElementById('prevPageInterns').disabled = internsPage === 1;
+                document.getElementById('nextPageInterns').disabled = internsPage >= totalPages;
+            }
+
+            window.toggleArchiveUser = async function (id, isArchive) {
+                const actionText = isArchive ? 'Archive Account' : 'Restore Account';
+                const actionDesc = isArchive
+                    ? 'Are you sure you want to archive this intern account? This will suspend all access and scanning privileges.'
+                    : 'Are you sure you want to restore this intern account? This will reactivate all access and scanning privileges.';
+
+                window.showCustomConfirm(actionText, actionDesc, isArchive ? 'archive' : 'unarchive', async () => {
+                    try {
+                        const r = await fetch('backend/attendance.php?action=toggleArchiveUser', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id, is_archived: isArchive ? 1 : 0 })
+                        });
+                        const d = await r.json();
+                        if (d.status === 'success') {
+                            loadInterns();
+                            loadHistory();
+                            loadActivity();
+                            updateMetrics();
+                            loadRequests();
+                        } else {
+                            window.showCustomConfirm('Error', d.message, 'info');
+                        }
+                    } catch (e) {
+                        window.showCustomConfirm('Error', 'Operation failed.', 'info');
+                    }
+                });
+            }
+
+            window.deleteUser = async function (id, name) {
+                const actionText = 'Delete Account';
+                const actionDesc = `Are you sure you want to permanently delete the account of ${name}? This action CANNOT be undone and will delete all their attendance records and requests.`;
+
+                window.showCustomConfirm(actionText, actionDesc, 'delete', async () => {
+                    try {
+                        const r = await fetch(`backend/auth.php?action=deleteUser&id=${id}`);
+                        const d = await r.json();
+                        if (d.status === 'success') {
+                            loadInterns();
+                            loadHistory();
+                            loadActivity();
+                            updateMetrics();
+                            loadRequests();
+                        } else {
+                            window.showCustomConfirm('Error', d.message, 'info');
+                        }
+                    } catch (e) {
+                        window.showCustomConfirm('Error', 'Operation failed.', 'info');
+                    }
+                });
+            }
+
+            let currentPrintData = null;
+
+            window.printBarcode = (id, name, serial) => {
+                currentPrintData = { id, name, serial };
+                const modal = document.getElementById('photoUploadModal');
+                const preview = document.getElementById('photoPreview');
+                const content = document.getElementById('dropZoneContent');
+                const confirmBtn = document.getElementById('confirmPrintBtn');
+
+                // Reset modal
+                document.getElementById('photoInput').value = '';
+                preview.classList.add('hidden');
+                content.classList.remove('hidden');
+                confirmBtn.disabled = true;
+
+                modal.classList.remove('hidden');
+            };
+
+            const photoInput = document.getElementById('photoInput');
+            const photoDropZone = document.getElementById('photoDropZone');
+
+            photoDropZone.onclick = () => photoInput.click();
+
+            photoInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (f) => {
+                        const previewImg = document.querySelector('#photoPreview img');
+                        previewImg.src = f.target.result;
+                        document.getElementById('photoPreview').classList.remove('hidden');
+                        document.getElementById('dropZoneContent').classList.add('hidden');
+                        document.getElementById('confirmPrintBtn').disabled = false;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            document.getElementById('cancelPhotoBtn').onclick = () => {
+                document.getElementById('photoUploadModal').classList.add('hidden');
+            };
+
+            document.getElementById('confirmPrintBtn').onclick = () => {
+                const photoData = document.querySelector('#photoPreview img').src;
+
+                // Get Logo as Data URL to ensure it prints
+                const logoImg = new Image();
+                logoImg.crossOrigin = "anonymous";
+                logoImg.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = logoImg.width;
+                    canvas.height = logoImg.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(logoImg, 0, 0);
+                    const logoData = canvas.toDataURL('image/png');
+                    generateActualPass(currentPrintData.name, currentPrintData.serial, photoData, logoData);
+                };
+                logoImg.onerror = () => {
+                    // Fallback to path if canvas fails
+                    generateActualPass(currentPrintData.name, currentPrintData.serial, photoData, 'assets/logo.png');
+                };
+                logoImg.src = 'assets/logo.png';
+
+                document.getElementById('photoUploadModal').classList.add('hidden');
+            };
+
+            // Bulk Print Pass Controller
+            const btnPrintAllPasses = document.getElementById('btnPrintAllPasses');
+            const bulkPrintModal = document.getElementById('bulkPrintModal');
+            const closeBulkPrintBtn = document.getElementById('closeBulkPrintBtn');
+            const cancelBulkPrintBtn = document.getElementById('cancelBulkPrintBtn');
+            const confirmBulkPrintBtn = document.getElementById('confirmBulkPrintBtn');
+            const bulkInternsList = document.getElementById('bulkInternsList');
+
+            let bulkUploadedPhotos = {}; // mapping internId -> base64Data
+            let bulkSelectedInterns = {}; // mapping internId -> boolean
+            const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+
+            if (btnPrintAllPasses) {
+                const closeBulkModal = () => {
+                    bulkPrintModal.classList.add('hidden');
+                };
+                if (closeBulkPrintBtn) closeBulkPrintBtn.onclick = closeBulkModal;
+                if (cancelBulkPrintBtn) cancelBulkPrintBtn.onclick = closeBulkModal;
+
+                btnPrintAllPasses.onclick = () => {
+                    bulkUploadedPhotos = {};
+                    bulkSelectedInterns = {}; // Default: all unselected (unselect all when opening)
+                    let bulkPrintCurrentPage = 1;
+                    const itemsPerPage = 5;
+
+                    const statusFilter = document.getElementById('filterStatusInterns').value;
+                    const query = document.getElementById('searchInterns').value.toLowerCase();
+
+                    let filtered = internsData;
+                    if (statusFilter === 'active') {
+                        filtered = filtered.filter(u => u.is_archived != 1);
+                    } else if (statusFilter === 'archived') {
+                        filtered = filtered.filter(u => u.is_archived == 1);
+                    }
+                    filtered = filtered.filter(u =>
+                        u.full_name.toLowerCase().includes(query) ||
+                        (u.serial_number && u.serial_number.toLowerCase().includes(query))
+                    );
+
+                    if (filtered.length === 0) {
+                        window.showCustomConfirm('No Interns', 'There are no interns matching the current filter/search to print.', 'info');
+                        return;
+                    }
+
+                    // Explicitly initialize Select All checkbox to unchecked state
+                    const selectAllChk = document.getElementById('bulkSelectAll');
+                    if (selectAllChk) {
+                        selectAllChk.checked = false;
+                        selectAllChk.indeterminate = false;
+                        selectAllChk.onchange = (e) => {
+                            const checked = e.target.checked;
+                            filtered.forEach(item => {
+                                bulkSelectedInterns[item.id] = checked;
+                            });
+                            // Update DOM checkboxes on the current page
+                            filtered.forEach(item => {
+                                const chk = document.getElementById(`bulk-check-${item.id}`);
+                                if (chk) chk.checked = checked;
+                            });
+                        };
+                    }
+
+                    const updateSelectAllState = () => {
+                        if (!selectAllChk) return;
+                        const totalFiltered = filtered.length;
+                        const selectedCount = filtered.filter(item => bulkSelectedInterns[item.id]).length;
+                        if (selectedCount === 0) {
+                            selectAllChk.checked = false;
+                            selectAllChk.indeterminate = false;
+                        } else if (selectedCount === totalFiltered) {
+                            selectAllChk.checked = true;
+                            selectAllChk.indeterminate = false;
+                        } else {
+                            selectAllChk.checked = false;
+                            selectAllChk.indeterminate = true;
+                        }
+                    };
+
+                    const renderBulkPage = (page) => {
+                        bulkPrintCurrentPage = page;
+                        bulkInternsList.innerHTML = '';
+
+                        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+                        const start = (page - 1) * itemsPerPage;
+                        const end = Math.min(start + itemsPerPage, filtered.length);
+                        const pageItems = filtered.slice(start, end);
+
+                        pageItems.forEach(u => {
+                            const row = document.createElement('div');
+                            row.className = "flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-200 transition-all gap-4";
+                            
+                            const isChecked = bulkSelectedInterns[u.id] ? 'checked' : '';
+                            const photoSrc = bulkUploadedPhotos[u.id] || '';
+                            const hasPhoto = photoSrc !== '';
+
+                            row.innerHTML = `
+                                <div class="flex items-center gap-3.5">
+                                    <input type="checkbox" id="bulk-check-${u.id}" class="circular-checkbox cursor-pointer shrink-0 select-none" ${isChecked}>
+                                    <div class="relative w-12 h-12 shrink-0">
+                                        <div class="w-full h-full rounded-full overflow-hidden border-2 border-white bg-slate-200 shadow-sm flex items-center justify-center">
+                                            <img id="bulk-thumb-${u.id}" class="w-full h-full object-cover ${hasPhoto ? '' : 'hidden'}" src="${photoSrc}">
+                                            <svg id="bulk-placeholder-${u.id}" class="w-6 h-6 text-slate-400 ${hasPhoto ? 'hidden' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </div>
+                                        <!-- Clear/X Button Overlay -->
+                                        <button type="button" id="bulk-clear-${u.id}" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center justify-center shadow-md transition-all ${hasPhoto ? '' : 'hidden'} z-20 cursor-pointer border border-white" title="Remove image">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="text-left">
+                                        <h4 class="font-bold text-slate-800 text-sm leading-tight">${u.full_name}</h4>
+                                        <p class="text-xs font-mono text-slate-400 mt-0.5">${u.serial_number || 'N/A'}</p>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <input type="file" id="bulk-input-${u.id}" class="hidden" accept="image/*">
+                                    <button type="button" id="bulk-btn-${u.id}" class="px-4 py-2 ${hasPhoto ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-white border-slate-200 text-slate-600'} border text-[10px] font-black uppercase tracking-wider rounded-xl hover:border-indigo-600 hover:text-indigo-600 shadow-sm transition-all cursor-pointer">
+                                        ${hasPhoto ? 'Change Image' : 'Upload Image'}
+                                    </button>
+                                </div>
+                            `;
+                            bulkInternsList.appendChild(row);
+
+                            const chk = row.querySelector(`#bulk-check-${u.id}`);
+                            if (chk) {
+                                chk.onchange = () => {
+                                    bulkSelectedInterns[u.id] = chk.checked;
+                                    updateSelectAllState();
+                                };
+                            }
+
+                            const fileInput = row.querySelector(`#bulk-input-${u.id}`);
+                            const uploadBtn = row.querySelector(`#bulk-btn-${u.id}`);
+                            const thumbImg = row.querySelector(`#bulk-thumb-${u.id}`);
+                            const placeholderSvg = row.querySelector(`#bulk-placeholder-${u.id}`);
+                            const clearBtn = row.querySelector(`#bulk-clear-${u.id}`);
+
+                            uploadBtn.onclick = () => fileInput.click();
+
+                            fileInput.onchange = (e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = (f) => {
+                                        const base64 = f.target.result;
+                                        bulkUploadedPhotos[u.id] = base64;
+                                        thumbImg.src = base64;
+                                        thumbImg.classList.remove('hidden');
+                                        placeholderSvg.classList.add('hidden');
+                                        clearBtn.classList.remove('hidden');
+                                        uploadBtn.textContent = "Change Image";
+                                        uploadBtn.classList.remove('bg-white', 'border-slate-200', 'text-slate-600');
+                                        uploadBtn.classList.add('bg-emerald-50', 'text-emerald-600', 'border-emerald-200');
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            };
+
+                            clearBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                delete bulkUploadedPhotos[u.id];
+                                fileInput.value = '';
+                                thumbImg.src = '';
+                                thumbImg.classList.add('hidden');
+                                placeholderSvg.classList.remove('hidden');
+                                clearBtn.classList.add('hidden');
+                                uploadBtn.textContent = "Upload Image";
+                                uploadBtn.classList.remove('bg-emerald-50', 'text-emerald-600', 'border-emerald-200');
+                                uploadBtn.classList.add('bg-white', 'border-slate-200', 'text-slate-600');
+                            };
+                        });
+
+                        renderBulkPagination(totalPages);
+                    };
+
+                    const renderBulkPagination = (totalPages) => {
+                        const paginationContainer = document.getElementById('bulkPaginationContainer');
+                        const pagesContainer = document.getElementById('pagesBulk');
+                        const prevBtn = document.getElementById('prevPageBulk');
+                        const nextBtn = document.getElementById('nextPageBulk');
+
+                        if (!paginationContainer || !pagesContainer || !prevBtn || !nextBtn) return;
+
+                        if (totalPages <= 1) {
+                            paginationContainer.classList.add('hidden');
+                            return;
+                        }
+
+                        paginationContainer.classList.remove('hidden');
+
+                        prevBtn.disabled = (bulkPrintCurrentPage === 1);
+                        nextBtn.disabled = (bulkPrintCurrentPage === totalPages);
+
+                        prevBtn.onclick = () => {
+                            if (bulkPrintCurrentPage > 1) {
+                                renderBulkPage(bulkPrintCurrentPage - 1);
+                            }
+                        };
+
+                        nextBtn.onclick = () => {
+                            if (bulkPrintCurrentPage < totalPages) {
+                                renderBulkPage(bulkPrintCurrentPage + 1);
+                            }
+                        };
+
+                        pagesContainer.innerHTML = '';
+                        
+                        let startPage = Math.max(1, bulkPrintCurrentPage - 1);
+                        let endPage = Math.min(totalPages, startPage + 2);
+                        if (endPage - startPage < 2) {
+                            startPage = Math.max(1, endPage - 2);
+                        }
+
+                        if (startPage > 1) {
+                            const p1 = document.createElement('div');
+                            p1.className = "page-num !w-8 !h-8 !text-xs";
+                            p1.textContent = "1";
+                            p1.onclick = () => renderBulkPage(1);
+                            pagesContainer.appendChild(p1);
+
+                            if (startPage > 2) {
+                                const dots = document.createElement('div');
+                                dots.className = "page-dot !w-8 !h-8 !text-xs";
+                                dots.textContent = "...";
+                                pagesContainer.appendChild(dots);
+                            }
+                        }
+
+                        for (let i = startPage; i <= endPage; i++) {
+                            const p = document.createElement('div');
+                            p.className = `page-num !w-8 !h-8 !text-xs ${i === bulkPrintCurrentPage ? 'active' : ''}`;
+                            p.textContent = i;
+                            p.onclick = () => renderBulkPage(i);
+                            pagesContainer.appendChild(p);
+                        }
+
+                        if (endPage < totalPages) {
+                            if (endPage < totalPages - 1) {
+                                const dots = document.createElement('div');
+                                dots.className = "page-dot !w-8 !h-8 !text-xs";
+                                dots.textContent = "...";
+                                pagesContainer.appendChild(dots);
+                            }
+                            const pN = document.createElement('div');
+                            pN.className = "page-num !w-8 !h-8 !text-xs";
+                            pN.textContent = totalPages;
+                            pN.onclick = () => renderBulkPage(totalPages);
+                            pagesContainer.appendChild(pN);
+                        }
+                    };
+
+                    renderBulkPage(1);
+                    updateSelectAllState();
+
+                    bulkPrintModal.classList.remove('hidden');
+                };
+
+                confirmBulkPrintBtn.onclick = () => {
+                    const statusFilter = document.getElementById('filterStatusInterns').value;
+                    const query = document.getElementById('searchInterns').value.toLowerCase();
+
+                    let filtered = internsData;
+                    if (statusFilter === 'active') {
+                        filtered = filtered.filter(u => u.is_archived != 1);
+                    } else if (statusFilter === 'archived') {
+                        filtered = filtered.filter(u => u.is_archived == 1);
+                    }
+                    filtered = filtered.filter(u =>
+                        u.full_name.toLowerCase().includes(query) ||
+                        (u.serial_number && u.serial_number.toLowerCase().includes(query))
+                    );
+
+                    // Filter only selected interns
+                    const selectedInterns = filtered.filter(u => bulkSelectedInterns[u.id]);
+
+                    if (selectedInterns.length === 0) {
+                        window.showCustomConfirm('No Selection', 'Please select at least one intern to print.', 'info');
+                        return;
+                    }
+
+                    const logoImg = new Image();
+                    logoImg.crossOrigin = "anonymous";
+                    logoImg.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = logoImg.width;
+                        canvas.height = logoImg.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(logoImg, 0, 0);
+                        const logoData = canvas.toDataURL('image/png');
+                        generateBulkActualPasses(selectedInterns, logoData);
+                    };
+                    logoImg.onerror = () => {
+                        generateBulkActualPasses(selectedInterns, 'assets/logo.png');
+                    };
+                    logoImg.src = 'assets/logo.png';
+
+                    bulkPrintModal.classList.add('hidden');
+                };
+            }
+
+            function generateBulkActualPasses(interns, logo) {
+                const printWindow = window.open('', '_blank', 'width=800,height=1000');
+
+                let cardsHtml = '';
+                const cardsPerPage = 6;
+                const totalPages = Math.ceil(interns.length / cardsPerPage);
+
+                for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+                    cardsHtml += `<div class="print-page">`;
+
+                    for (let cardIdx = 0; cardIdx < cardsPerPage; cardIdx++) {
+                        const internIdx = pageIdx * cardsPerPage + cardIdx;
+                        if (internIdx < interns.length) {
+                            const u = interns[internIdx];
+                            const photo = bulkUploadedPhotos[u.id] || DEFAULT_AVATAR;
+
+                            cardsHtml += `
+                                <div class="card-cell">
+                                    <div class="id-card">
+                                        <div class="header-brand">
+                                            <div class="logo-box"><img src="${logo}"></div>
+                                            <div class="photo-wrap">
+                                                <div class="photo-circle"><img src="${photo}"></div>
+                                            </div>
+                                            <div class="wave-bg"></div>
+                                        </div>
+                                        <div class="info-content">
+                                            <h1 class="intern-name">${u.full_name}</h1>
+                                            <p class="dept-title">IT Department</p>
+                                            <p class="internship-tag">Internship</p>
+                                            <div class="barcode-section">
+                                                <svg id="barcode-${u.serial_number}"></svg>
+                                                <div class="serial-label">${u.serial_number || 'N/A'}</div>
+                                            </div>
+                                        </div>
+                                        <div class="footer-decoration"></div>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            cardsHtml += `<div class="card-cell empty-cell"></div>`;
+                        }
+                    }
+
+                    cardsHtml += `</div>`;
+                }
+
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Concentrix Bulk ID Passes</title>
+                            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+                            <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>
+                            <style>
+                                @page { 
+                                    size: A4 portrait;
+                                    margin: 0; 
+                                }
+                                * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
+                                body { 
+                                    margin: 0; 
+                                    padding: 0;
+                                    background: #ffffff;
+                                    font-family: 'Plus Jakarta Sans', sans-serif;
+                                    -webkit-user-select: none;
+                                    user-select: none;
+                                }
+                                .print-page {
+                                    width: 210mm;
+                                    height: 297mm;
+                                    page-break-after: always;
+                                    box-sizing: border-box;
+                                    padding: 8mm 6mm;
+                                    display: grid;
+                                    grid-template-columns: repeat(2, 1fr);
+                                    grid-template-rows: repeat(3, 1fr);
+                                    gap: 6mm 6mm;
+                                    align-items: center;
+                                    justify-items: center;
+                                    overflow: hidden;
+                                }
+                                .print-page:last-child {
+                                    page-break-after: avoid !important;
+                                }
+                                .card-cell {
+                                    width: 90mm;
+                                    height: 90mm;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    overflow: hidden;
+                                    border: 1px dashed rgba(0,0,0,0.05);
+                                }
+                                .empty-cell {
+                                    border: none !important;
+                                    opacity: 0;
+                                }
+                                .id-card {
+                                    width: 320px;
+                                    height: 500px;
+                                    background: #ffffff;
+                                    border-radius: 32px;
+                                    overflow: hidden;
+                                    position: relative;
+                                    display: flex;
+                                    flex-direction: column;
+                                    border: 1px solid #e2e8f0;
+                                    transform: scale(0.68);
+                                    transform-origin: center center;
+                                    flex-shrink: 0;
+                                }
+                                .header-brand {
+                                    height: 220px;
+                                    background: #002f6c;
+                                    position: relative;
+                                    padding: 30px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                                .logo-box { height: 75px; width: 100%; display: flex; justify-content: center; margin-bottom: 15px; }
+                                .logo-box img { height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
+                                
+                                .photo-wrap {
+                                    position: relative;
+                                    z-index: 20;
+                                }
+                                .photo-circle {
+                                    width: 130px;
+                                    height: 130px;
+                                    border-radius: 50%;
+                                    border: 6px solid #ffffff;
+                                    overflow: hidden;
+                                    background: #f1f5f9;
+                                    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+                                }
+                                .photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+                                .wave-bg {
+                                    position: absolute;
+                                    bottom: -60px;
+                                    left: -20%;
+                                    width: 140%;
+                                    height: 120px;
+                                    background: #ffffff;
+                                    border-radius: 50% 50% 0 0;
+                                    z-index: 10;
+                                }
+                                
+                                .info-content {
+                                    flex: 1;
+                                    padding: 65px 25px 25px;
+                                    text-align: center;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    z-index: 20;
+                                }
+                                .intern-name { 
+                                    margin: 0; 
+                                    font-size: 19px; 
+                                    font-weight: 900; 
+                                    color: #0f172a;
+                                    line-height: 1.2;
+                                    letter-spacing: -0.2px;
+                                }
+                                .dept-title {
+                                    margin: 6px 0 2px;
+                                    font-size: 11px;
+                                    font-weight: 800;
+                                    color: #002f6c;
+                                    text-transform: uppercase;
+                                    letter-spacing: 2px;
+                                }
+                                .internship-tag {
+                                    font-size: 10px;
+                                    font-weight: 700;
+                                    color: #94a3b8;
+                                    text-transform: uppercase;
+                                    letter-spacing: 4px;
+                                    margin-bottom: 20px;
+                                }
+
+                                .barcode-section {
+                                    width: 100%;
+                                    padding: 15px;
+                                    background: #f8fafc;
+                                    border: 1px solid #f1f5f9;
+                                    border-radius: 20px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                                svg[id^="barcode-"] { width: 180px; height: 50px; }
+                                .serial-label {
+                                    margin-top: 8px;
+                                    font-family: monospace;
+                                    font-size: 13px;
+                                    font-weight: 800;
+                                    color: #475569;
+                                    letter-spacing: 1px;
+                                }
+
+                                .footer-decoration {
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 8px;
+                                    background: #002f6c;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            ${cardsHtml}
+                            <script>
+                                window.onload = () => {
+                                    const serials = ${JSON.stringify(interns.map(u => u.serial_number))};
+                                    serials.forEach(s => {
+                                        if (s) {
+                                            JsBarcode("#barcode-" + s, s, {
+                                                format: "CODE128",
+                                                width: 2,
+                                                height: 60,
+                                                displayValue: false,
+                                                margin: 0
+                                            });
+                                        }
+                                    });
+                                    setTimeout(() => { window.print(); window.close(); }, 1200);
+                                };
+                            <\/script>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+
+            function generateActualPass(name, serial, photo, logo) {
+                const printWindow = window.open('', '_blank', 'width=800,height=1000');
+
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Intern ID Pass - ${name}</title>
+                            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+                            <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>
+                            <style>
+                                @page { 
+                                    size: A4 portrait;
+                                    margin: 0; 
+                                }
+                                * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
+                                body { 
+                                    margin: 0; 
+                                    padding: 0;
+                                    background: #ffffff;
+                                    font-family: 'Plus Jakarta Sans', sans-serif;
+                                    -webkit-user-select: none;
+                                    user-select: none;
+                                }
+                                .print-page {
+                                    width: 210mm;
+                                    height: 297mm;
+                                    box-sizing: border-box;
+                                    padding: 8mm 6mm;
+                                    display: grid;
+                                    grid-template-columns: repeat(2, 1fr);
+                                    grid-template-rows: repeat(3, 1fr);
+                                    gap: 6mm 6mm;
+                                    align-items: center;
+                                    justify-items: center;
+                                    overflow: hidden;
+                                }
+                                .card-cell {
+                                    width: 90mm;
+                                    height: 90mm;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    overflow: hidden;
+                                    border: 1px dashed rgba(0,0,0,0.05);
+                                }
+                                .empty-cell {
+                                    border: none !important;
+                                    opacity: 0;
+                                }
+                                .id-card {
+                                    width: 320px;
+                                    height: 500px;
+                                    background: #ffffff;
+                                    border-radius: 32px;
+                                    overflow: hidden;
+                                    position: relative;
+                                    display: flex;
+                                    flex-direction: column;
+                                    border: 1px solid #e2e8f0;
+                                    transform: scale(0.68);
+                                    transform-origin: center center;
+                                    flex-shrink: 0;
+                                }
+                                .header-brand {
+                                    height: 220px;
+                                    background: #002f6c;
+                                    position: relative;
+                                    padding: 30px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                                .logo-box { height: 75px; width: 100%; display: flex; justify-content: center; margin-bottom: 15px; }
+                                .logo-box img { height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
+                                
+                                .photo-wrap {
+                                    position: relative;
+                                    z-index: 20;
+                                }
+                                .photo-circle {
+                                    width: 130px;
+                                    height: 130px;
+                                    border-radius: 50%;
+                                    border: 6px solid #ffffff;
+                                    overflow: hidden;
+                                    background: #f1f5f9;
+                                    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+                                }
+                                .photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+                                .wave-bg {
+                                    position: absolute;
+                                    bottom: -60px;
+                                    left: -20%;
+                                    width: 140%;
+                                    height: 120px;
+                                    background: #ffffff;
+                                    border-radius: 50% 50% 0 0;
+                                    z-index: 10;
+                                }
+                                
+                                .info-content {
+                                    flex: 1;
+                                    padding: 65px 25px 25px;
+                                    text-align: center;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    z-index: 20;
+                                }
+                                .intern-name { 
+                                    margin: 0; 
+                                    font-size: 19px; 
+                                    font-weight: 900; 
+                                    color: #0f172a;
+                                    line-height: 1.2;
+                                    letter-spacing: -0.2px;
+                                }
+                                .dept-title {
+                                    margin: 6px 0 2px;
+                                    font-size: 11px;
+                                    font-weight: 800;
+                                    color: #002f6c;
+                                    text-transform: uppercase;
+                                    letter-spacing: 2px;
+                                }
+                                .internship-tag {
+                                    font-size: 10px;
+                                    font-weight: 700;
+                                    color: #94a3b8;
+                                    text-transform: uppercase;
+                                    letter-spacing: 4px;
+                                    margin-bottom: 20px;
+                                }
+
+                                .barcode-section {
+                                    width: 100%;
+                                    padding: 15px;
+                                    background: #f8fafc;
+                                    border: 1px solid #f1f5f9;
+                                    border-radius: 20px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                                svg[id^="barcode-"] { width: 180px; height: 50px; }
+                                .serial-label {
+                                    margin-top: 8px;
+                                    font-family: monospace;
+                                    font-size: 13px;
+                                    font-weight: 800;
+                                    color: #475569;
+                                    letter-spacing: 1px;
+                                }
+
+                                .footer-decoration {
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 8px;
+                                    background: #002f6c;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="print-page">
+                                <div class="card-cell">
+                                    <div class="id-card">
+                                        <div class="header-brand">
+                                            <div class="logo-box"><img src="${logo}"></div>
+                                            <div class="photo-wrap">
+                                                <div class="photo-circle"><img src="${photo}"></div>
+                                            </div>
+                                            <div class="wave-bg"></div>
+                                        </div>
+                                        <div class="info-content">
+                                            <h1 class="intern-name">${name}</h1>
+                                            <p class="dept-title">IT Department</p>
+                                            <p class="internship-tag">Internship</p>
+                                            <div class="barcode-section">
+                                                <svg id="barcode-${serial}"></svg>
+                                                <div class="serial-label">${serial || 'N/A'}</div>
+                                            </div>
+                                        </div>
+                                        <div class="footer-decoration"></div>
+                                    </div>
+                                </div>
+                                <div class="card-cell empty-cell"></div>
+                                <div class="card-cell empty-cell"></div>
+                                <div class="card-cell empty-cell"></div>
+                                <div class="card-cell empty-cell"></div>
+                                <div class="card-cell empty-cell"></div>
+                            </div>
+                            <script>
+                                window.onload = () => {
+                                    if ("${serial}") {
+                                        JsBarcode("#barcode-${serial}", "${serial}", {
+                                            format: "CODE128",
+                                            width: 2,
+                                            height: 60,
+                                            displayValue: false,
+                                            margin: 0
+                                        });
+                                    }
+                                    setTimeout(() => { window.print(); window.close(); }, 700);
+                                };
+                            <\/script>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+
+            document.getElementById('searchInterns').oninput = () => { internsPage = 1; renderInterns(); };
+            document.getElementById('prevPageInterns').onclick = () => { if (internsPage > 1) { internsPage--; renderInterns(); } };
+            document.getElementById('nextPageInterns').onclick = () => {
+                const statusFilter = document.getElementById('filterStatusInterns').value;
+                let filtered = internsData;
+                if (statusFilter === 'active') {
+                    filtered = filtered.filter(u => u.is_archived != 1);
+                } else if (statusFilter === 'archived') {
+                    filtered = filtered.filter(u => u.is_archived == 1);
+                }
+                const query = document.getElementById('searchInterns').value.toLowerCase();
+                filtered = filtered.filter(u => u.full_name.toLowerCase().includes(query) || (u.serial_number && u.serial_number.toLowerCase().includes(query)));
+
+                if (internsPage * itemsPerPage < filtered.length) { internsPage++; renderInterns(); }
+            };
+            document.getElementById('filterStatusInterns').onchange = () => { internsPage = 1; renderInterns(); };
+
+            document.getElementById('searchActivity').oninput = () => { activityPage = 1; renderActivity(); };
+            document.getElementById('searchHistory').oninput = () => { historyPage = 1; renderHistory(); };
+
+            document.getElementById('resetActivity').onclick = () => {
+                const svg = document.getElementById('resetActivity').querySelector('svg');
+                svg.classList.add('animate-spin-custom');
+                setTimeout(() => svg.classList.remove('animate-spin-custom'), 800);
+                document.getElementById('searchActivity').value = '';
+                fpActivity.clear(); activityPage = 1; loadActivity();
+            };
+            // Removed resetHistory listener
+
+            const logoutBtn = document.getElementById('logoutBtn');
+            const logoutModal = document.getElementById('logoutModal');
+            const confirmLogout = document.getElementById('confirmLogout');
+            const cancelLogout = document.getElementById('cancelLogout');
+
+            if (logoutBtn && logoutModal) {
+                logoutBtn.addEventListener('click', () => {
+                    logoutModal.classList.remove('hidden');
+                });
+
+                cancelLogout.addEventListener('click', () => {
+                    logoutModal.classList.add('hidden');
+                });
+
+                confirmLogout.addEventListener('click', async () => {
+                    await fetch('backend/auth.php?action=logout');
+                    window.location.href = 'login.html';
+                });
+            }
+            document.getElementById('closeModalBtn').onclick = () => {
+                document.getElementById('userReportModal').classList.add('hidden');
+                document.getElementById('mainHeader').classList.remove('hidden');
+            };
+
+            loadActivity();
+            loadHistory();
+            loadInterns();
+            updateMetrics();
+            loadRequests(); // Initial check for request badge
+
+            // Real-time updates for Admin
+            setInterval(() => {
+                loadActivity();
+                updateMetrics();
+            }, 10000);
+
+            startLiveDurationTimer();
+
+            // Initialize Admin Edit Flatpickrs
+            window.fpEditDate = flatpickr("#editDate", { dateFormat: "Y-m-d", altInput: true, altFormat: "F j, Y" });
+            window.fpEditTimeIn = flatpickr("#editTimeIn", { enableTime: true, noCalendar: true, dateFormat: "H:i", altInput: true, altFormat: "h:i K", time_24hr: false });
+            window.fpEditTimeOut = flatpickr("#editTimeOut", { enableTime: true, noCalendar: true, dateFormat: "H:i", altInput: true, altFormat: "h:i K", time_24hr: false });
+        });
+
+
+
+            function calculateBreakOverlap(startTimeMs, endTimeMs) {
+                if (!startTimeMs || !endTimeMs || startTimeMs >= endTimeMs) return 0;
+                let totalOverlapSec = 0;
+                let current = new Date(startTimeMs);
+                let end = new Date(endTimeMs);
+                
+                let iter = new Date(current.getFullYear(), current.getMonth(), current.getDate());
+                const endLimit = new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1);
+                
+                while (iter < endLimit) {
+                    const y = iter.getFullYear();
+                    const m = iter.getMonth();
+                    const d = iter.getDate();
+                    
+                    // Break 1: 12 MN - 1 AM
+                    const b1Start = new Date(y, m, d, 0, 0, 0).getTime();
+                    const b1End = new Date(y, m, d, 1, 0, 0).getTime();
+                    
+                    // Break 2: 12 NN - 1 PM
+                    const b2Start = new Date(y, m, d, 12, 0, 0).getTime();
+                    const b2End = new Date(y, m, d, 13, 0, 0).getTime();
+                    
+                    const overlap1 = Math.max(0, Math.min(endTimeMs, b1End) - Math.max(startTimeMs, b1Start));
+                    const overlap2 = Math.max(0, Math.min(endTimeMs, b2End) - Math.max(startTimeMs, b2Start));
+                    
+                    totalOverlapSec += (overlap1 + overlap2) / 1000;
+                    
+                    iter.setDate(iter.getDate() + 1);
+                }
+                return Math.floor(totalOverlapSec);
+            }
+
+            function formatSecondsToText(totalSeconds, isLive = false) {
+                if (!totalSeconds || totalSeconds <= 0) return '--';
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                if (isLive) {
+                    // HH:MM:SS format for live display to feel more "real-time"
+                    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }
+
+                let timeText = '';
+                if (hours > 0) timeText += hours + (hours === 1 ? ' hr ' : ' hrs ');
+                if (minutes > 0 || (hours === 0 && !isLive)) timeText += minutes + (minutes === 1 ? ' min' : ' mins');
+                return timeText.trim() || '0 min';
+            }
+
+            function startLiveDurationTimer() {
+                if (window.liveDurationInterval) clearInterval(window.liveDurationInterval);
+                window.liveDurationInterval = setInterval(() => {
+                    const now = Date.now();
+                    document.querySelectorAll('.live-duration').forEach(el => {
+                        const startTime = parseInt(el.getAttribute('data-start'));
+                        if (startTime) {
+                            const now = Date.now();
+                            let diffSeconds = Math.max(0, Math.floor((now - startTime) / 1000));
+
+                            if (diffSeconds >= 0) {
+                                el.textContent = formatSecondsToText(diffSeconds, true);
+                            }
+                        }
+                    });
+                }, 1000);
+            }
+
+            window.openUserReport = async function (id, name) {
+                window.currentReportUserId = id;
+                window.currentReportUserName = name;
+                const modal = document.getElementById('userReportModal');
+                let url = `backend/attendance.php?action=history&month=all&user_id=${id}`;
+
+                document.getElementById('modalUserName').textContent = name;
+                modal.classList.remove('hidden');
+                document.getElementById('mainHeader').classList.add('hidden');
+                const r = await fetch(url);
+                const d = await r.json();
+
+                if (d.status === 'success') {
+                    window.modalRawData = d.history;
+                    window.modalPage = 1;
+
+                    // Pre-calculate total time including live ones
+                    let totalS = 0;
+                    d.history.forEach(rec => {
+                        if (rec.is_absent == 1) return;
+                        if (rec.total_seconds) {
+                            if (parseInt(rec.total_seconds) !== 43200) {
+                                totalS += parseInt(rec.total_seconds);
+                            }
+                        } else if (rec.raw_time_in && !rec.raw_time_out) {
+                             const startTime = new Date(rec.raw_date + ' ' + rec.raw_time_in).getTime();
+                             const now = Date.now();
+                             let diffSeconds = Math.max(0, Math.floor((now - startTime) / 1000));
+                             totalS += diffSeconds;
+                         }
+                    });
+                    document.getElementById('modalTotalHours').textContent = formatSecondsToText(totalS);
+                    renderModal();
+                }
+            }
+
+            window.renderModal = function () {
+                const tbody = document.getElementById('modalTableBody');
+                const itemsPerPage = modalItemsPerPage; // Use the standardized constant
+                const start = (window.modalPage - 1) * itemsPerPage;
+                const data = window.modalRawData || [];
+                const paginated = data.slice(start, start + itemsPerPage);
+
+                tbody.innerHTML = '';
+
+                // Group the paginated items by date for subtotals (within the current page)
+                const grouped = {};
+                paginated.forEach(rec => {
+                    const date = rec.formatted_date;
+                    if (!grouped[date]) grouped[date] = [];
+                    grouped[date].push(rec);
+                });
+
+                Object.keys(grouped).forEach(date => {
+                    let dayTotalS = 0;
+                    grouped[date].forEach(rec => {
+                        let currentTotalS = parseInt(rec.total_seconds || 0);
+                        let durText = formatSecondsToText(currentTotalS);
+                        let durClass = currentTotalS >= 43200 ? 'text-rose-600 font-black flex items-center justify-center gap-1' : 'text-emerald-600';
+                        if (currentTotalS >= 43200) {
+                            durText = `<span>${formatSecondsToText(currentTotalS)}</span><svg class="w-5 h-5 text-rose-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Forgot to Time Out (Auto Timed Out)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+                        }
+                        let durDataAttr = '';
+
+                        if (rec.is_absent == 1) {
+                            durText = '';
+                            durClass = 'text-rose-600 font-black';
+                            currentTotalS = 0;
+                        } else if (!rec.raw_time_out && rec.raw_time_in) {
+                            const startTime = new Date(rec.raw_date + ' ' + rec.raw_time_in).getTime();
+                            const now = Date.now();
+                            let diffSeconds = Math.max(0, Math.floor((now - startTime) / 1000));
+
+                            if (diffSeconds >= 0) {
+                                durText = formatSecondsToText(diffSeconds, true);
+                                durClass = 'text-indigo-600 live-duration animate-pulse';
+                                durDataAttr = `data-start="${startTime}"`;
+                                currentTotalS = diffSeconds;
+                            }
+                        }
+
+                        dayTotalS += currentTotalS;
+
+                        // JSON escape helper for pre-filling
+                        const escapedRec = JSON.stringify(rec).replace(/'/g, "\\'");
+
+                        const actionButtons = rec.attendance_id ? `
+                            <div class="flex justify-end gap-2">
+                                <button onclick='openAdminEditModal(${escapedRec})' class="p-2 hover:bg-indigo-50 text-indigo-400 hover:text-indigo-600 rounded-lg transition-all" title="Edit">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </button>
+                                <button onclick='deleteAttendanceRecord(${rec.attendance_id}, "${date}")' class="p-2 hover:bg-rose-50 text-rose-400 hover:text-rose-600 rounded-lg transition-all" title="Delete">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        ` : `<span class="text-[10px] text-slate-400 font-black uppercase tracking-widest px-2">Absent</span>`;
+
+                        tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="px-6 py-6 font-bold text-slate-400 text-sm">${date}</td>
+                            <td class="px-6 py-6 text-center text-emerald-600 font-black">${rec.is_absent == 1 && !rec.raw_time_in ? '--' : rec.formatted_time_in}</td>
+                            <td class="px-6 py-6 text-center text-rose-600 font-black">${rec.is_absent == 1 ? '--' : rec.formatted_time_out}</td>
+                            <td class="px-6 py-6 text-right font-black ${durClass} text-lg" ${durDataAttr}>${durText}</td>
+                            <td class="px-6 py-6 text-right">${actionButtons}</td>
+                        </tr>
+                    `;
+                    });
+                    tbody.innerHTML += `
+                    <tr class="bg-slate-50/50">
+                        <td colspan="3" class="px-6 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-right">Daily Subtotal:</td>
+                        <td class="px-6 py-3 text-right font-black text-indigo-600 text-lg border-t border-slate-200">${formatSecondsToText(dayTotalS)}</td>
+                        <td class="px-6 py-3 border-t border-slate-200"></td>
+                    </tr>
+                `;
+                });
+
+                const totalPages = Math.ceil(data.length / itemsPerPage) || 1;
+                renderPagination('pagesModal', window.modalPage, totalPages, (p) => {
+                    window.modalPage = p;
+                    renderModal();
+                });
+                document.getElementById('prevPageModal').disabled = window.modalPage === 1;
+                document.getElementById('nextPageModal').disabled = window.modalPage >= totalPages;
+            };
+
+            window.openAdminEditModal = function (rec) {
+                if (!rec.attendance_id) {
+                    alert("Cannot edit a record that hasn't been saved to the database (e.g. historical absent days).");
+                    return;
+                }
+                document.getElementById('editAttendanceId').value = rec.attendance_id;
+                window.fpEditDate.setDate(rec.raw_date);
+                window.fpEditTimeIn.setDate(rec.raw_time_in);
+                window.fpEditTimeOut.setDate(rec.raw_time_out || '');
+
+                document.getElementById('adminEditModal').classList.remove('hidden');
+            };
+
+            window.closeAdminEditModal = function () {
+                document.getElementById('adminEditModal').classList.add('hidden');
+            };
+
+            window.saveAdminEdit = async function () {
+                const id = document.getElementById('editAttendanceId').value;
+                const date = document.getElementById('editDate').value;
+                const timeIn = document.getElementById('editTimeIn').value;
+                const timeOut = document.getElementById('editTimeOut').value;
+
+                if (!date || !timeIn) {
+                    alert("Date and Time In are required.");
+                    return;
+                }
+
+                try {
+                    const r = await fetch('backend/attendance.php?action=adminEditAttendance', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id, date, time_in: timeIn, time_out: timeOut })
+                    });
+                    const d = await r.json();
+                    if (d.status === 'success') {
+                        closeAdminEditModal();
+                        // Refresh the current view
+                        openUserReport(window.currentReportUserId, window.currentReportUserName);
+                    } else {
+                        alert(d.message || "Failed to update record.");
+                    }
+                } catch (e) {
+                    alert("An error occurred while saving.");
+                }
+            };
+
+            window.deleteAttendanceRecord = function (id, date) {
+                if (!id) {
+                    alert("Cannot delete a record that hasn't been saved to the database (e.g. historical absent days).");
+                    return;
+                }
+                window.showCustomConfirm(
+                    "Delete Attendance Log?",
+                    `Are you sure you want to permanently delete the attendance record for ${date}? This action cannot be undone.`,
+                    "delete",
+                    async () => {
+                        try {
+                            const r = await fetch('backend/attendance.php?action=adminDeleteAttendance', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id })
+                            });
+                            const d = await r.json();
+                            if (d.status === 'success') {
+                                // Refresh the report modal
+                                openUserReport(window.currentReportUserId, window.currentReportUserName);
+                                // Refresh main tables
+                                if (typeof loadHistory === 'function') loadHistory();
+                                if (typeof loadActivity === 'function') loadActivity();
+                            } else {
+                                alert(d.message || "Failed to delete record.");
+                            }
+                        } catch (e) {
+                            alert("An error occurred while deleting.");
+                        }
+                    }
+                );
+            };
+        </script>
+        </div>
+    </body>
+</html>
